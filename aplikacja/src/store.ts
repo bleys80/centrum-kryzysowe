@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { createEvent, setArchived, type NewEventInput } from './domain/event';
-import type { EventDoc } from './domain/types';
+import { buildReport, nextSeq, type ReportDraft } from './domain/reportDraft';
+import { toLocalDateTime } from './domain/time';
+import type { EventDoc, Report } from './domain/types';
 import { loadEvents, saveEvent } from './storage/db';
 
 interface AppState {
@@ -11,6 +13,7 @@ interface AppState {
   load: () => Promise<void>;
   addEvent: (input: NewEventInput) => EventDoc;
   archiveEvent: (id: string, archived: boolean) => void;
+  addReport: (eventId: string, draft: ReportDraft) => Report | null;
 }
 
 export const useApp = create<AppState>((set, get) => {
@@ -47,6 +50,15 @@ export const useApp = create<AppState>((set, get) => {
     archiveEvent: (id, archived) => {
       const doc = get().events[id];
       if (doc) commit(setArchived(doc, archived, new Date()));
+    },
+
+    addReport: (eventId, draft) => {
+      const doc = get().events[eventId];
+      if (!doc) return null;
+      const now = new Date();
+      const report = buildReport(draft, crypto.randomUUID(), nextSeq(doc.reports), now);
+      commit({ ...doc, reports: [...doc.reports, report], updatedAt: toLocalDateTime(now) });
+      return report;
     },
   };
 });

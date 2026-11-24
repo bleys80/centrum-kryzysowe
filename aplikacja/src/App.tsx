@@ -19,7 +19,7 @@ export function App() {
   }, []);
 
   return (
-    <main className="app">
+    <main className={route.name === 'wydarzenie' ? 'app wide' : 'app'}>
       <header>
         <h1><a href={hrefFor({ name: 'lista' })}>Centrum kryzysowe</a></h1>
         <p className="muted">Prototyp aplikacji operatora. Dane zostają wyłącznie w tej przeglądarce.</p>

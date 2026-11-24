@@ -57,5 +57,96 @@ table.events td.actions { text-align: right; }
 }
 kbd {
   font: 600 0.85rem ui-monospace, Consolas, monospace;
-  padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--bg);
+  padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--bg); color: var(--fg);
 }
+
+/* --- Główny ekran wydarzenia --- */
+:root {
+  --cat-wypadek: #b3261e;
+  --cat-utrudnienie: #7a4f00;
+  --cat-rezygnacja: #1d4f91;
+  --dnf: #8b0f3a;
+}
+.app.wide { max-width: none; padding: 12px 16px 72px; }
+.app.wide > header { display: flex; align-items: baseline; gap: 16px; }
+.app.wide > header h1 { font-size: 1.1rem; margin: 0; }
+.app.wide > header p { font-size: 0.85rem; }
+
+.event-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin: 8px 0 0; }
+.event-head h2 { margin: 0; font-size: 1.25rem; }
+
+.main-grid {
+  display: grid; gap: 12px; align-items: start;
+  grid-template-columns: minmax(380px, 440px) minmax(360px, 1fr) minmax(300px, 380px);
+}
+.main-grid .card { margin-top: 12px; padding: 12px 14px; }
+.main-grid h2 { font-size: 1.1rem; margin: 0 0 10px; }
+.normal { font-weight: 400; }
+
+.report-form { display: grid; gap: 8px; }
+.report-form .field { gap: 4px; }
+.report-form .field input:not([type='checkbox']), .report-form textarea { padding: 6px 8px; }
+.report-form .field { max-width: none; }
+.form-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+.form-head h2 { margin: 0; }
+.field.time input { width: 7.5em; font-size: 1.1rem; font-weight: 700; }
+.field textarea { font: inherit; font-weight: 400; padding: 8px 10px; border: 2px solid var(--border); border-radius: 4px; resize: vertical; }
+.field textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+.hint { font-size: 0.85rem; font-weight: 400; color: var(--muted); margin: 0; }
+.hint.warn { color: #8a4b00; font-weight: 600; }
+.hint.warn:empty { display: none; }
+.categories legend .hint { display: inline; }
+.row.tight { gap: 8px; align-items: stretch; flex-wrap: nowrap; }
+.row.tight .grow { flex: 1; min-width: 0; }
+.form-actions { align-items: center; }
+
+.button { display: inline-flex; align-items: center; padding: 8px 12px; border: 2px solid var(--border); border-radius: 4px; color: var(--fg); text-decoration: none; font-weight: 400; white-space: nowrap; }
+.button.disabled { color: var(--muted); border-style: dashed; pointer-events: none; }
+button.big { font-size: 1.1rem; padding: 14px 18px; width: 100%; }
+button.primary kbd { margin-left: 8px; }
+
+/* Numery startowe */
+.bibs {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  min-height: 46px; padding: 6px; border: 2px solid var(--border); border-radius: 4px; cursor: text;
+}
+.bibs:focus-within { outline: 3px solid var(--accent); outline-offset: 1px; }
+.bib-input { flex: 1 0 8em; border: none !important; padding: 4px !important; outline: none !important; font-size: 1.05rem !important; }
+.chip { display: inline-flex; align-items: center; border: 2px solid var(--border); border-radius: 4px; background: var(--surface); font-weight: 700; }
+.chip label { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 6px; cursor: pointer; }
+.chip input { width: 1.05rem; height: 1.05rem; margin: 0; padding: 0; accent-color: var(--dnf); }
+.chip input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.chip.dnf { border-color: var(--dnf); background: #fbe9ef; }
+.chip-remove { border: none; background: none; padding: 0 6px; font-size: 1.1rem; color: var(--muted); }
+.dnf-tag { font-size: 0.7rem; font-weight: 800; color: #fff; background: var(--dnf); border-radius: 3px; padding: 1px 4px; margin-left: 4px; letter-spacing: 0.03em; }
+
+/* Kategorie: kolor + etykieta tekstowa */
+.categories { border: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.categories legend { font-weight: 600; padding: 0; margin-bottom: 4px; }
+.categories { flex-wrap: nowrap; }
+.categories .cat { flex: 1; }
+.categories .cat span { width: 100%; justify-content: center; padding: 6px 4px; }
+.cat { position: relative; }
+.cat input { position: absolute; opacity: 0; }
+.cat span { display: inline-flex; gap: 6px; align-items: center; padding: 6px 10px; border: 2px solid var(--c); border-left-width: 8px; border-radius: 4px; color: var(--c); font-weight: 600; cursor: pointer; }
+.cat input:checked + span { background: var(--c); color: #fff; }
+.cat input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+.cat-wypadek { --c: var(--cat-wypadek); }
+.cat-utrudnienie { --c: var(--cat-utrudnienie); }
+.cat-rezygnacja { --c: var(--cat-rezygnacja); }
+
+/* Lista zgłoszeń */
+.reports { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.report { border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; }
+.report-head { display: flex; gap: 10px; align-items: center; }
+.report-head .time { font-weight: 800; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.report-head .seq { color: var(--muted); }
+.badge { font-size: 0.8rem; font-weight: 700; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); }
+.badge.cat-wypadek, .badge.cat-utrudnienie, .badge.cat-rezygnacja { background: var(--c); border-color: var(--c); color: #fff; }
+.report-bibs { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0 0; padding: 0; }
+.report-bibs li { font-weight: 700; padding: 1px 6px; border: 1px solid var(--border); border-radius: 3px; }
+.report-bibs li.dnf { border-color: var(--dnf); }
+.report-location, .report-desc { margin: 4px 0 0; }
+.report-location { font-weight: 600; }
+
+.side h2 { margin-bottom: 6px; }

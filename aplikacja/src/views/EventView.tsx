@@ -2,8 +2,10 @@ import { EVENT_TYPE_LABELS } from '../domain/event';
 import { formatDatePl } from '../domain/time';
 import { hrefFor } from '../router';
 import { useApp } from '../store';
+import { ReportForm } from './ReportForm';
+import { ReportList } from './ReportList';
 
-// Krok 1: tylko nagłówek wydarzenia. Główny ekran w trzech kolumnach to krok 2.
+// Główny ekran: formularz | lista zgłoszeń | panel SAG albo lista DNF.
 export function EventView({ id }: { id: string }) {
   const doc = useApp((s) => s.events[id]);
 
@@ -16,15 +18,26 @@ export function EventView({ id }: { id: string }) {
     );
   }
 
+  const dnfCount = new Set(doc.reports.flatMap((r) => r.athletes.filter((a) => a.dnf).map((a) => a.bib))).size;
+
   return (
-    <section aria-labelledby="wydarzenie">
-      <p><a href={hrefFor({ name: 'lista' })}>← Wydarzenia</a></p>
-      <h2 id="wydarzenie">{doc.name}</h2>
-      <p className="muted">
-        {formatDatePl(doc.date)} · {EVENT_TYPE_LABELS[doc.type]}
-        {doc.archived && ' · w archiwum'}
-      </p>
-      <p className="status">Formularz zgłoszeń pojawi się w kolejnym kroku.</p>
-    </section>
+    <>
+      <div className="event-head">
+        <a href={hrefFor({ name: 'lista' })}>← Wydarzenia</a>
+        <h2>{doc.name}</h2>
+        <span className="muted">
+          {formatDatePl(doc.date)} · {EVENT_TYPE_LABELS[doc.type]}
+          {doc.archived && ' · w archiwum'}
+        </span>
+      </div>
+      <div className="main-grid">
+        <ReportForm eventId={doc.id} />
+        <ReportList reports={doc.reports} />
+        <aside className="card side" aria-label="Lista DNF i SAG">
+          <h2>DNF: {dnfCount}</h2>
+          <p className="muted">Pełna lista DNF (krok 4) i panel SAG (krok 6) pojawią się w tej kolumnie.</p>
+        </aside>
+      </div>
+    </>
   );
 }
