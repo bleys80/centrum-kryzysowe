@@ -40,7 +40,9 @@ export function ReportForm({ eventId }: { eventId: string }) {
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const bibRef = useRef<HTMLInputElement>(null);
 
-  const focusBibs = () => requestAnimationFrame(() => bibRef.current?.focus());
+  // Bez opóźnienia (żadnego requestAnimationFrame): odroczony fokus potrafił zabrać kursor
+  // z pola faktu, gdy operator zaraz po Alt+1 nacisnął Alt+2. Nowy formularz dostaje fokus przez autoFocus.
+  const focusBibs = () => bibRef.current?.focus();
 
   const open = () => {
     if (draft && !isEmpty(draft, bibText)) {

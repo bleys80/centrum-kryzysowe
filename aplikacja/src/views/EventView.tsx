@@ -32,7 +32,7 @@ export function EventView({ id }: { id: string }) {
       </div>
       <div className="main-grid">
         <ReportForm eventId={doc.id} />
-        <ReportList reports={doc.reports} />
+        <ReportList eventId={doc.id} reports={doc.reports} />
         <aside className="card side" aria-label="Lista DNF i SAG">
           <h2>DNF: {dnfCount}</h2>
           <p className="muted">Pełna lista DNF (krok 4) i panel SAG (krok 6) pojawią się w tej kolumnie.</p>

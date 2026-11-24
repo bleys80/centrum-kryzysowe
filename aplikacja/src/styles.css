@@ -138,7 +138,30 @@ button.primary kbd { margin-left: 8px; }
 /* Lista zgłoszeń */
 .reports { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .report { border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; }
-.report-head { display: flex; gap: 10px; align-items: center; }
+.report-head { display: flex; gap: 10px; align-items: center; width: 100%; padding: 0; border: none; background: none; text-align: left; cursor: pointer; }
+.report-head .toggle { margin-left: auto; font-size: 0.85rem; color: var(--accent); }
+.report.open { border-width: 2px; border-color: var(--accent); }
+
+button.small { padding: 4px 10px; font-size: 0.9rem; }
+.report-details { display: grid; gap: 8px; margin-top: 8px; }
+.details-bibs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.details-bibs .chip input[type='checkbox'] { width: 1.05rem; height: 1.05rem; margin: 0; accent-color: var(--dnf); }
+.chip.editing input { font: inherit; padding: 2px 4px; border: none; }
+.add-bibs, .fact-row input { font: inherit; padding: 4px 8px; border: 2px solid var(--border); border-radius: 4px; }
+.details-cats { display: flex; gap: 6px; flex-wrap: wrap; }
+.cat-btn { border-color: var(--c); color: var(--c); font-weight: 600; }
+.cat-btn[aria-pressed='true'] { background: var(--c); color: #fff; }
+.content-edit { display: grid; gap: 6px; }
+.content-edit .field { max-width: none; gap: 2px; font-size: 0.9rem; }
+.content-edit .time-inline { grid-template-columns: auto 7.5em; align-items: center; justify-content: start; gap: 8px; }
+.content-edit input, .content-edit textarea { padding: 4px 8px !important; font-size: 1rem !important; }
+.fact-row { display: flex; gap: 6px; }
+.fact-row input { flex: 1; min-width: 0; }
+.add-bibs:focus-visible, .fact-row input:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+
+.facts { list-style: none; margin: 6px 0 0; padding: 6px 0 0; border-top: 1px dashed var(--border); display: grid; gap: 2px; font-size: 0.92rem; }
+.fact .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+.fact.system { color: var(--muted); }
 .report-head .time { font-weight: 800; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
 .report-head .seq { color: var(--muted); }
 .badge { font-size: 0.8rem; font-weight: 700; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); }
