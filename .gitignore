@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.env
+.env.*
+.claude/settings.local.json
+
+# Wyniki testów
+aplikacja/playwright-report/
+aplikacja/test-results/
+
+# Pliki projektu zostają lokalnie (repo publiczne: tylko kod, decyzja 2026-11-24)
+/CLAUDE.md
+/aplikacja/brief.md
+/aplikacja/PLAN.md
+
+# Dane z zawodów NIGDY nie trafiają do repo (repo jest publiczne).
+# Apka nadaje kopiom i eksportom nazwy pasujące do tych wzorców.
+*.backup.json
+*-wydarzenie.json
+eksport/
+kopie/
+*.xlsx
+*.pdf
