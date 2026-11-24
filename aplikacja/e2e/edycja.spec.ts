@@ -48,18 +48,18 @@ test('Alt+Enter w polu faktu dopisuje fakt, a nie zapisuje rozpoczętego zgłosz
 
 test('kraksa: zmiana DNF po zapisie i cofnięcie wycofania zapisują fakty i zmieniają licznik', async ({ page }) => {
   await wydarzenieZeZgloszeniem(page, '101* 102 103* ');
-  await expect(page.getByRole('heading', { name: 'DNF: 2' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'DNF: 2', exact: true })).toBeVisible();
 
   await z1(page).getByRole('button', { name: /edytuj/ }).click();
   await z1(page).getByLabel('DNF 102').check();
-  await expect(page.getByRole('heading', { name: 'DNF: 3' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'DNF: 3', exact: true })).toBeVisible();
   await z1(page).getByLabel('DNF 103').uncheck();
-  await expect(page.getByRole('heading', { name: 'DNF: 2' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'DNF: 2', exact: true })).toBeVisible();
 
   await expect(fakty(page)).toHaveText([/DNF zaznaczony: 102$/, /DNF cofnięty: 103 \(był od \d{2}:\d{2}\)$/]);
 
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'DNF: 2' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'DNF: 2', exact: true })).toBeVisible();
   await expect(fakty(page)).toHaveCount(2);
 });
 
@@ -157,7 +157,7 @@ test('zmiana kategorii na rezygnację zaznacza DNF i zostawia fakty', async ({ p
   await z1(page).getByRole('button', { name: /edytuj/ }).click();
   await z1(page).getByRole('group', { name: 'Kategoria zgłoszenia' }).getByRole('button', { name: 'Rezygnacja' }).click();
 
-  await expect(page.getByRole('heading', { name: 'DNF: 2' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'DNF: 2', exact: true })).toBeVisible();
   await expect(fakty(page)).toHaveText([
     /Zmieniono kategorię: Wypadek → Rezygnacja$/,
     /DNF zaznaczony: 301$/,

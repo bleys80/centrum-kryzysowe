@@ -4,7 +4,11 @@ import { defineConfig } from '@playwright/test';
 // bez pobierania osobnych przeglądarek Playwrighta.
 export default defineConfig({
   testDir: 'e2e',
-  use: { baseURL: 'http://localhost:4173/centrum-kryzysowe/' },
+  use: {
+    baseURL: 'http://localhost:4173/centrum-kryzysowe/',
+    // Przyciski „Kopiuj …” piszą do schowka; testy go odczytują.
+    permissions: ['clipboard-read', 'clipboard-write'],
+  },
   projects: [
     { name: 'chrome', use: { channel: 'chrome' } },
     { name: 'edge', use: { channel: 'msedge' } },

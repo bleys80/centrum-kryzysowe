@@ -3,7 +3,7 @@ import { createEvent, setArchived, type NewEventInput } from './domain/event';
 import { buildReport, nextSeq, type ReportDraft } from './domain/reportDraft';
 import type { EditResult } from './domain/reportEdit';
 import { toLocalDateTime } from './domain/time';
-import type { EventDoc, Report } from './domain/types';
+import type { DnfSentEntry, EventDoc, Report } from './domain/types';
 import { loadEvents, saveEvent } from './storage/db';
 
 interface AppState {
@@ -17,6 +17,8 @@ interface AppState {
   addReport: (eventId: string, draft: ReportDraft) => Report | null;
   /** Zmienia zapisane zgłoszenie; zwraca komunikat błędu albo null. */
   editReport: (eventId: string, reportId: string, edit: (r: Report, now: Date) => EditResult) => string | null;
+  /** Zapamiętuje, co z listy DNF skopiowano już na grupę. */
+  setDnfSent: (eventId: string, sent: DnfSentEntry[]) => void;
 }
 
 export const useApp = create<AppState>((set, get) => {
@@ -75,6 +77,11 @@ export const useApp = create<AppState>((set, get) => {
       const reports = doc.reports.map((r) => (r.id === reportId ? result.report : r));
       commit({ ...doc, reports, updatedAt: toLocalDateTime(now) });
       return null;
+    },
+
+    setDnfSent: (eventId, sent) => {
+      const doc = get().events[eventId];
+      if (doc) commit({ ...doc, dnfSent: sent, updatedAt: toLocalDateTime(new Date()) });
     },
   };
 });

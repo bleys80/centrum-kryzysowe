@@ -114,6 +114,34 @@ export function editReceivedTime(report: Report, time: string, now: Date): EditR
   };
 }
 
+/**
+ * Godzina wycofania jednego numeru, zawsze edytowalna (lista DNF).
+ * 'zgloszenie' = godzina przyjęcia zgłoszenia; { time } = dowolna godzina HH:MM tego dnia.
+ */
+export function setDnfTime(
+  report: Report,
+  bib: string,
+  value: 'zgloszenie' | { time: string },
+  now: Date,
+): EditResult {
+  const a = report.athletes.find((x) => x.bib === bib);
+  if (!a || !a.dnf || !a.dnfAt) return { error: `Numer ${bib} nie ma DNF w tym zgłoszeniu.` };
+  let dnfAt: string;
+  let dnfAtSource: ReportAthlete['dnfAtSource'];
+  if (value === 'zgloszenie') {
+    dnfAt = report.receivedAt;
+    dnfAtSource = 'zgloszenie';
+  } else {
+    if (!/^\d{2}:\d{2}$/.test(value.time)) return { error: 'Podaj godzinę wycofania (GG:MM).' };
+    dnfAt = `${a.dnfAt.slice(0, 10)}T${value.time}:00`;
+    dnfAtSource = 'reczna';
+  }
+  if (dnfAt === a.dnfAt && dnfAtSource === a.dnfAtSource) return { report };
+  const athletes = report.athletes.map((x) => (x.bib === bib ? { ...x, dnfAt, dnfAtSource } : x));
+  const text = `Godzina DNF ${bib}: ${hhmm(a.dnfAt)} → ${hhmm(dnfAt)}`;
+  return { report: withFacts({ ...report, athletes }, now, dnfAt === a.dnfAt ? [] : [text]) };
+}
+
 /** Zmiana kategorii po zapisie. Zmiana na rezygnację zaznacza DNF numerom bez DNF. */
 export function changeCategory(report: Report, category: Category | null, now: Date): EditResult {
   if (report.category === category) return { report };

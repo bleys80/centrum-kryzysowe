@@ -51,7 +51,7 @@ test('kraksa: 10 numerów wklejonych naraz, DNF tylko przy 3, zapis z klawiatury
   await expect(z).toContainText('Wypadek');
   await expect(z.locator('.report-bibs li')).toHaveCount(10);
   await expect(z.locator('.report-bibs li.dnf')).toHaveText(['102DNF', '105DNF', '109DNF']);
-  await expect(page.getByRole('heading', { name: 'DNF: 3' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'DNF: 3', exact: true })).toBeVisible();
   test.info().annotations.push({ type: 'czas kraksy', description: `${Date.now() - start} ms` });
 });
 
@@ -64,7 +64,7 @@ test('samo „5456*” zapisuje się jako rezygnacja z DNF, bez miejsca i opisu'
   const z = zgloszenie(page, 1);
   await expect(z).toContainText('Rezygnacja');
   await expect(z.locator('.report-bibs li.dnf')).toHaveText(['5456DNF']);
-  await expect(page.getByRole('heading', { name: 'DNF: 1' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'DNF: 1', exact: true })).toBeVisible();
 });
 
 test('rezygnacja zaznacza DNF wszystkim numerom, a jeden da się odznaczyć', async ({ page }) => {

@@ -19,10 +19,12 @@ interface Props {
   report: Report;
   /** Zmienia się, gdy trzeba przenieść kursor do pola faktu (Alt+2). */
   focusFactToken: number;
+  /** Numer, od którego operator przyszedł (lista DNF): wyraźnie podświetlony. */
+  highlightBib?: string | null;
 }
 
 /** Edycja zapisanego zgłoszenia: numery, DNF, kategoria i nowe fakty. Każda zmiana = fakt z godziną. */
-export function ReportDetails({ eventId, report, focusFactToken }: Props) {
+export function ReportDetails({ eventId, report, focusFactToken, highlightBib = null }: Props) {
   const editReport = useApp((s) => s.editReport);
   const [error, setError] = useState<string | null>(null);
   const [fact, setFact] = useState('');
@@ -121,7 +123,11 @@ export function ReportDetails({ eventId, report, focusFactToken }: Props) {
               />
             </span>
           ) : (
-            <span key={a.bib} className={a.dnf ? 'chip dnf' : 'chip'}>
+            <span
+              key={a.bib}
+              className={['chip', a.dnf && 'dnf', a.bib === highlightBib && 'highlight'].filter(Boolean).join(' ')}
+              data-highlight={a.bib === highlightBib || undefined}
+            >
               <label>
                 <input
                   type="checkbox"

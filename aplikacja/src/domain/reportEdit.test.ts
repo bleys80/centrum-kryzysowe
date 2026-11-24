@@ -9,6 +9,7 @@ import {
   removeAthlete,
   renameAthlete,
   setAthleteDnf,
+  setDnfTime,
   type EditResult,
 } from './reportEdit';
 import type { Report } from './types';
@@ -123,6 +124,20 @@ describe('edycja zgłoszenia po zapisie', () => {
     const r0 = base();
     expect(ok(editReceivedTime(r0, '10:00', t1))).toBe(r0);
     expect(editReceivedTime(r0, '', t1).error).toMatch(/godzinę/);
+  });
+
+  it('godzina DNF: dowolna (ręczna) albo godzina zgłoszenia, każda zmiana z faktem', () => {
+    const r1 = ok(setAthleteDnf(base(), '102', true, t1)); // zaznaczony o 10:25
+    const r2 = ok(setDnfTime(r1, '102', { time: '10:10' }, t1));
+    expect(r2.athletes[1]).toMatchObject({ dnfAt: '2026-06-14T10:10:00', dnfAtSource: 'reczna' });
+    expect(lastFact(r2)).toMatchObject({ text: 'Godzina DNF 102: 10:25 → 10:10', kind: 'system' });
+
+    const r3 = ok(setDnfTime(r2, '102', 'zgloszenie', t1));
+    expect(r3.athletes[1]).toMatchObject({ dnfAt: '2026-06-14T10:00:00', dnfAtSource: 'zgloszenie' });
+    expect(lastFact(r3).text).toBe('Godzina DNF 102: 10:10 → 10:00');
+
+    expect(setDnfTime(base(), '102', { time: '10:10' }, t1).error).toMatch(/nie ma DNF/);
+    expect(setDnfTime(r1, '102', { time: '' }, t1).error).toMatch(/godzinę/);
   });
 
   it('fakty mają unikalne identyfikatory', () => {
