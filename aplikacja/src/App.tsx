@@ -1,39 +1,44 @@
-import { useEffect, useState } from 'react';
-import { SHORTCUTS, matchShortcut, type Shortcut } from './shortcuts';
+import { useEffect } from 'react';
+import { hrefFor, useRoute } from './router';
+import { SHORTCUTS } from './shortcuts';
+import { requestPersistentStorage } from './storage/db';
+import { useApp } from './store';
+import { EventList } from './views/EventList';
+import { EventView } from './views/EventView';
+import { ShortcutProbe } from './views/ShortcutProbe';
 
-// Krok 0: pusta apka + próbnik skrótów do sprawdzenia w Chrome i Edge.
 export function App() {
-  const [last, setLast] = useState<{ shortcut: Shortcut; at: string } | null>(null);
+  const route = useRoute();
+  const status = useApp((s) => s.status);
+  const loadErrors = useApp((s) => s.loadErrors);
+  const saveError = useApp((s) => s.saveError);
 
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      const shortcut = matchShortcut(e);
-      if (!shortcut) return;
-      e.preventDefault();
-      setLast({ shortcut, at: new Date().toLocaleTimeString('pl-PL') });
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    useApp.getState().load();
+    requestPersistentStorage();
   }, []);
 
   return (
     <main className="app">
       <header>
-        <h1>Centrum kryzysowe</h1>
+        <h1><a href={hrefFor({ name: 'lista' })}>Centrum kryzysowe</a></h1>
         <p className="muted">Prototyp aplikacji operatora. Dane zostają wyłącznie w tej przeglądarce.</p>
       </header>
 
-      <section aria-labelledby="probnik">
-        <h2 id="probnik">Próbnik skrótów</h2>
-        <p>Kliknij w pole i naciśnij lewy Alt z klawiszem. Prawy Alt (AltGr) ma wpisywać polskie znaki, nie uruchamiać skrótów.</p>
-        <label className="field">
-          Pole testowe (wpisz tekst, spróbuj też dyktowania Win+H)
-          <input data-testid="pole-testowe" type="text" autoComplete="off" />
-        </label>
-        <p role="status" data-testid="ostatni-skrot" className="status">
-          {last ? `${last.at}: ${last.shortcut.label} (${last.shortcut.description})` : 'Jeszcze nie użyto skrótu.'}
-        </p>
-      </section>
+      {saveError && <p role="alert" className="error">{saveError}</p>}
+      {loadErrors.map((e) => (
+        <p key={e.key} role="alert" className="error">Nie wczytano jednego wydarzenia: {e.message}</p>
+      ))}
+
+      {status === 'ladowanie' ? (
+        <p className="muted">Wczytywanie…</p>
+      ) : route.name === 'wydarzenie' ? (
+        <EventView id={route.id} />
+      ) : route.name === 'skroty' ? (
+        <ShortcutProbe />
+      ) : (
+        <EventList />
+      )}
 
       <footer className="shortcut-bar" aria-label="Skróty klawiszowe">
         {SHORTCUTS.map((s) => (
@@ -41,6 +46,7 @@ export function App() {
             <kbd>{s.label}</kbd> {s.description}
           </span>
         ))}
+        <a href={hrefFor({ name: 'skroty' })}>Próbnik skrótów</a>
       </footer>
     </main>
   );

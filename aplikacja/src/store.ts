@@ -1,0 +1,52 @@
+import { create } from 'zustand';
+import { createEvent, setArchived, type NewEventInput } from './domain/event';
+import type { EventDoc } from './domain/types';
+import { loadEvents, saveEvent } from './storage/db';
+
+interface AppState {
+  status: 'ladowanie' | 'gotowe';
+  events: Record<string, EventDoc>;
+  loadErrors: { key: string; message: string }[];
+  saveError: string | null;
+  load: () => Promise<void>;
+  addEvent: (input: NewEventInput) => EventDoc;
+  archiveEvent: (id: string, archived: boolean) => void;
+}
+
+export const useApp = create<AppState>((set, get) => {
+  /** Każda zmiana wydarzenia przechodzi tędy: stan w pamięci + zapis w IndexedDB. */
+  const commit = (doc: EventDoc) => {
+    set((s) => ({ events: { ...s.events, [doc.id]: doc } }));
+    saveEvent(doc).then(
+      () => get().saveError && set({ saveError: null }),
+      (e: Error) => set({ saveError: `Nie udało się zapisać w przeglądarce: ${e.message}` }),
+    );
+  };
+
+  return {
+    status: 'ladowanie',
+    events: {},
+    loadErrors: [],
+    saveError: null,
+
+    load: async () => {
+      const { events, errors } = await loadEvents();
+      set({
+        status: 'gotowe',
+        events: Object.fromEntries(events.map((e) => [e.id, e])),
+        loadErrors: errors,
+      });
+    },
+
+    addEvent: (input) => {
+      const doc = createEvent(input, crypto.randomUUID(), new Date());
+      commit(doc);
+      return doc;
+    },
+
+    archiveEvent: (id, archived) => {
+      const doc = get().events[id];
+      if (doc) commit(setArchived(doc, archived, new Date()));
+    },
+  };
+});
