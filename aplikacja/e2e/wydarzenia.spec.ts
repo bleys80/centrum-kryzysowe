@@ -20,7 +20,7 @@ test('nowe wydarzenie otwiera się i przetrwa odświeżenie strony', async ({ pa
   await expect(page.getByRole('heading', { name: 'Wyścig Testowy Żółw' })).toBeVisible();
 
   await page.getByRole('link', { name: '← Wydarzenia' }).click();
-  await expect(page.getByRole('link', { name: 'Wyścig Testowy Żółw' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Wyścig Testowy Żółw', exact: true })).toBeVisible();
 });
 
 test('wydarzenie przetrwa zamknięcie karty i otwarcie nowej', async ({ page, context }) => {
@@ -29,7 +29,7 @@ test('wydarzenie przetrwa zamknięcie karty i otwarcie nowej', async ({ page, co
 
   const nowa = await context.newPage();
   await nowa.goto('');
-  await expect(nowa.getByRole('link', { name: 'Bieg Testowy Ćma' })).toBeVisible();
+  await expect(nowa.getByRole('link', { name: 'Bieg Testowy Ćma', exact: true })).toBeVisible();
 });
 
 test('bez nazwy nie tworzy wydarzenia', async ({ page }) => {
@@ -53,5 +53,5 @@ test('archiwizacja przenosi wydarzenie do archiwum, a przywrócenie z powrotem',
   await archiwum.getByRole('button', { name: /Przywróć/ }).click();
 
   await expect(page.locator('details.archived')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Triathlon Testowy' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Triathlon Testowy', exact: true })).toBeVisible();
 });

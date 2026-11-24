@@ -51,6 +51,9 @@ export function EventView({ id }: { id: string }) {
           {formatDatePl(doc.date)} · {EVENT_TYPE_LABELS[doc.type]}
           {doc.archived && ' · w archiwum'}
         </span>
+        <a className="config-link" href={hrefFor({ name: 'konfiguracja', id: doc.id })}>
+          ⚙ Konfiguracja
+        </a>
       </div>
       <div className="main-grid">
         <ReportForm eventId={doc.id} />

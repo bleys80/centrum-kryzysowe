@@ -174,6 +174,31 @@ button.small { padding: 4px 10px; font-size: 0.9rem; }
 
 .side h2 { margin-bottom: 6px; }
 
+/* Konfiguracja */
+.app.medium { max-width: 1200px; }
+.config-link { margin-left: auto; font-weight: 600; }
+/* Link wyglądający jak przycisk obok (np. „Konfiguracja” przy „Archiwizuj”): ten sam rozmiar. */
+.button.as-button { padding: 8px 14px; font-size: 1rem; line-height: normal; color: var(--fg); vertical-align: middle; }
+td.actions { white-space: nowrap; }
+.config .card { margin-top: 16px; }
+.config .card h2 { margin-bottom: 4px; }
+.config .card > .hint { margin-bottom: 10px; }
+.config-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.config-table th { text-align: left; font-size: 0.85rem; color: var(--muted); padding: 4px 6px; }
+.config-table td { padding: 4px 6px; }
+.config-table input:not([type='checkbox']) { font: inherit; width: 100%; min-width: 4em; padding: 5px 8px; border: 2px solid var(--border); border-radius: 4px; }
+.config-table input:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+.config-table input[aria-invalid='true'] { border-color: #a1140b; }
+.config-table td.phone { display: flex; gap: 4px; align-items: center; }
+.config-table .capacity input { width: 5em; }
+.config-table.rules th[scope='row'] { color: var(--fg); font-weight: 600; font-size: 0.95rem; }
+.config-table.rules td.center { text-align: center; }
+.config-table.rules input[type='checkbox'] { width: 1.2rem; height: 1.2rem; }
+.config-list { list-style: none; padding: 0; margin: 0 0 10px; display: grid; gap: 6px; max-width: 520px; }
+.config-list li { display: flex; gap: 6px; }
+.config-list input { flex: 1; font: inherit; padding: 5px 8px; border: 2px solid var(--border); border-radius: 4px; }
+button.copy { padding: 2px 8px; white-space: nowrap; }
+
 /* Kierowanie uwagi na edytowane zgłoszenie */
 .editing-bar {
   position: sticky; top: 0; z-index: 5; margin-top: 12px;

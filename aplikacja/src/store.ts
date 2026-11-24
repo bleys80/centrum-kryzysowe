@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { createEvent, setArchived, type NewEventInput } from './domain/event';
 import { buildReport, nextSeq, type ReportDraft } from './domain/reportDraft';
+import type { ConfigResult } from './domain/config';
 import type { EditResult } from './domain/reportEdit';
 import { toLocalDateTime } from './domain/time';
 import type { DnfSentEntry, EventDoc, Report } from './domain/types';
@@ -17,6 +18,8 @@ interface AppState {
   addReport: (eventId: string, draft: ReportDraft) => Report | null;
   /** Zmienia zapisane zgłoszenie; zwraca komunikat błędu albo null. */
   editReport: (eventId: string, reportId: string, edit: (r: Report, now: Date) => EditResult) => string | null;
+  /** Zmiana konfiguracji wydarzenia; zwraca komunikat błędu albo null. */
+  updateEvent: (eventId: string, change: (doc: EventDoc) => EventDoc | ConfigResult) => string | null;
   /** Zapamiętuje, co z listy DNF skopiowano już na grupę. */
   setDnfSent: (eventId: string, sent: DnfSentEntry[]) => void;
 }
@@ -76,6 +79,16 @@ export const useApp = create<AppState>((set, get) => {
       if (result.report === current) return null;
       const reports = doc.reports.map((r) => (r.id === reportId ? result.report : r));
       commit({ ...doc, reports, updatedAt: toLocalDateTime(now) });
+      return null;
+    },
+
+    updateEvent: (eventId, change) => {
+      const doc = get().events[eventId];
+      if (!doc) return 'Nie znaleziono wydarzenia.';
+      const result = change(doc);
+      const next = 'schemaVersion' in result ? result : result.doc;
+      if (!next) return (result as { error: string }).error;
+      if (next !== doc) commit({ ...next, updatedAt: toLocalDateTime(new Date()) });
       return null;
     },
 

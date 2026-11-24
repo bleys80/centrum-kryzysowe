@@ -90,6 +90,9 @@ function EventTable({ events }: { events: EventDoc[] }) {
             <td>{EVENT_TYPE_LABELS[e.type]}</td>
             <td>{e.reports.length}</td>
             <td className="actions">
+              <a className="button as-button" href={hrefFor({ name: 'konfiguracja', id: e.id })}>
+                Konfiguracja<span className="sr-only"> {e.name}</span>
+              </a>{' '}
               <button type="button" onClick={() => archiveEvent(e.id, !e.archived)}>
                 {e.archived ? 'Przywróć' : 'Archiwizuj'}
                 <span className="sr-only"> {e.name}</span>

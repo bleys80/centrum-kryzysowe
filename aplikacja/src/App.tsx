@@ -3,6 +3,7 @@ import { hrefFor, useRoute } from './router';
 import { SHORTCUTS } from './shortcuts';
 import { requestPersistentStorage } from './storage/db';
 import { useApp } from './store';
+import { ConfigView } from './views/ConfigView';
 import { EventList } from './views/EventList';
 import { EventView } from './views/EventView';
 import { ShortcutProbe } from './views/ShortcutProbe';
@@ -19,7 +20,7 @@ export function App() {
   }, []);
 
   return (
-    <main className={route.name === 'wydarzenie' ? 'app wide' : 'app'}>
+    <main className={route.name === 'wydarzenie' ? 'app wide' : route.name === 'konfiguracja' ? 'app medium' : 'app'}>
       <header>
         <h1><a href={hrefFor({ name: 'lista' })}>Centrum kryzysowe</a></h1>
         <p className="muted">Prototyp aplikacji operatora. Dane zostają wyłącznie w tej przeglądarce.</p>
@@ -34,6 +35,8 @@ export function App() {
         <p className="muted">Wczytywanie…</p>
       ) : route.name === 'wydarzenie' ? (
         <EventView id={route.id} />
+      ) : route.name === 'konfiguracja' ? (
+        <ConfigView id={route.id} />
       ) : route.name === 'skroty' ? (
         <ShortcutProbe />
       ) : (
